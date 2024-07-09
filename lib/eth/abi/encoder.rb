@@ -206,11 +206,11 @@ module Eth
           component_type = type.components[i]
           if component_type.dynamic?
             offsets_and_static_values << type(Type.size_type, dynamic_offset)
-            dynamic_value = type(component_type, arg.is_a?(Array) ? arg[i] : arg[component_type.name])
+            dynamic_value = type(component_type, arg.is_a?(Array) ? arg[i] : arg[component_type.name.to_sym])
             dynamic_values << dynamic_value
             dynamic_offset += dynamic_value.size
           else
-            offsets_and_static_values << type(component_type, arg.is_a?(Array) ? arg[i] : arg[component_type.name])
+            offsets_and_static_values << type(component_type, arg.is_a?(Array) ? arg[i] : arg[component_type.name.to_sym])
           end
         end
 
