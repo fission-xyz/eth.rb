@@ -395,6 +395,21 @@ module Eth
       end
     end
 
+    # Prepares parameters and sends the command to the client.
+    def send_command(command, args)
+      @block_number ||= "latest"
+      args << block_number if ["eth_getBalance", "eth_call"].include? command
+      payload = {
+        jsonrpc: "2.0",
+        method: command,
+        params: marshal(args),
+        id: next_id,
+      }
+      output = JSON.parse(send_request(payload.to_json))
+      raise IOError, output["error"]["message"] unless output["error"].nil?
+      output
+    end
+
     private
 
     # Allows to determine if we work with a local connectoin
@@ -470,20 +485,7 @@ module Eth
       Util.bin_to_hex(Eth::Abi.encode(types, args))
     end
 
-    # Prepares parameters and sends the command to the client.
-    def send_command(command, args)
-      @block_number ||= "latest"
-      args << block_number if ["eth_getBalance", "eth_call"].include? command
-      payload = {
-        jsonrpc: "2.0",
-        method: command,
-        params: marshal(args),
-        id: next_id,
-      }
-      output = JSON.parse(send_request(payload.to_json))
-      raise IOError, output["error"]["message"] unless output["error"].nil?
-      output
-    end
+  
 
     # Increments the request id.
     def next_id
