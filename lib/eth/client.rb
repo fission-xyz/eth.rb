@@ -410,19 +410,6 @@ module Eth
       output
     end
 
-    private
-
-    # Allows to determine if we work with a local connectoin
-    def local?
-      if self.instance_of? Eth::Client::Ipc
-        true
-      elsif self.host === "127.0.0.1" || self.host === "localhost"
-        true
-      else
-        false
-      end
-    end
-
     # Prepares a transaction to be send for the given params.
     def send_transaction(params, legacy, key, nonce)
       if legacy
@@ -456,6 +443,21 @@ module Eth
         eth_send_transaction(params)["result"]
       end
     end
+
+    private
+
+    # Allows to determine if we work with a local connectoin
+    def local?
+      if self.instance_of? Eth::Client::Ipc
+        true
+      elsif self.host === "127.0.0.1" || self.host === "localhost"
+        true
+      else
+        false
+      end
+    end
+
+
 
     # Non-transactional function call called from call().
     # @see https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_call
